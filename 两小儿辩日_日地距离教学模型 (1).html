@@ -1,0 +1,473 @@
+<html style="margin:0;padding:0;">
+<meta charset="utf-8">
+<title>两小儿辩日 · 日地距离与冷热教学模型</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#f3f7fc;color:#26323f;}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px 14px 30px;}
+  header h1{font-size:24px;color:#1e3a5f;margin-bottom:6px;}
+  header p{font-size:15px;color:#5b6b7d;line-height:1.6;}
+  header p b{color:#e08a1e;}
+  .hint{display:inline-block;margin-top:8px;font-size:13px;color:#7a5a1e;background:#fff6e0;border:1px solid #f0d9a0;border-radius:8px;padding:5px 12px;}
+  .scene-card{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(20,40,80,.08);padding:10px 10px 6px;margin-top:12px;}
+  svg{width:100%;display:block;touch-action:none;user-select:none;border-radius:12px;}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 4px 4px;}
+  button{min-height:44px;min-width:44px;padding:8px 16px;border-radius:10px;border:1px solid #cfe0ee;background:#fff;color:#1e3a5f;cursor:pointer;font-size:14px;font-family:inherit;transition:background .15s,border-color .15s;}
+  button:hover{border-color:#1e63b3;}
+  button.active{background:#1e63b3;border-color:#1e63b3;color:#fff;}
+  input[type=range]{flex:1 1 220px;min-width:200px;height:44px;accent-color:#e8a33d;cursor:pointer;}
+  .sliderTime{font-size:15px;font-weight:700;color:#1e3a5f;min-width:64px;text-align:center;}
+  .dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin-top:14px;}
+  .card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 5px rgba(20,40,80,.07);}
+  .card h3{font-size:13px;color:#5b6b7d;margin-bottom:8px;font-weight:600;}
+  .big{font-size:28px;font-weight:800;color:#1e3a5f;line-height:1.15;}
+  .note{font-size:13px;color:#7d8b9b;margin-top:6px;line-height:1.5;}
+  .bar{position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,#4f9df0,#ffc966 55%,#ff7a3d);margin:12px 0 2px;}
+  .bar i{position:absolute;top:-5px;bottom:-5px;width:4px;border-radius:2px;background:#1e3a5f;transform:translateX(-2px);}
+  .feelChip{display:inline-block;margin-top:8px;font-size:14px;font-weight:700;padding:3px 12px;border-radius:14px;}
+  .fL{background:#dff0ff;color:#1f6bb3;}
+  .fS{background:#e4f6e2;color:#2f8a3d;}
+  .fH{background:#ffe9c9;color:#c26a12;}
+  .fY{background:#ffd9cc;color:#c43a17;}
+  .teach{margin-top:14px;background:#fff8ec;border:1px solid #f3e2bd;border-radius:12px;padding:12px 16px;font-size:15px;line-height:1.7;color:#6b4a12;min-height:52px;}
+  .dist{margin-top:12px;}
+  .distRow{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;}
+  .dist .sub{font-size:14px;color:#5b6b7d;}
+  .distBar{position:relative;height:12px;border-radius:6px;background:#cfe0ee;margin:14px 0 4px;}
+  .distVar{position:absolute;left:99.6%;top:-4px;bottom:-4px;width:3px;border-radius:2px;background:#ff7a3d;}
+  .distNote{font-size:14px;color:#1e3a5f;line-height:1.6;margin-top:8px;}
+  .cmp{margin-top:14px;background:#fff;border-radius:16px;box-shadow:0 1px 5px rgba(20,40,80,.07);padding:14px 14px 16px;}
+  .cmp h2{font-size:17px;color:#1e3a5f;margin-bottom:6px;}
+  .cmpSub{font-size:14px;color:#5b6b7d;margin-bottom:10px;line-height:1.6;}
+  .cmp svg{width:100%;display:block;border-radius:10px;border:1px solid #eef3f9;}
+  .cmpFoot{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;margin-top:12px;}
+  .cmpNote{flex:1 1 320px;font-size:14px;color:#6b4a12;background:#fff8ec;border:1px solid #f3e2bd;border-radius:10px;padding:10px 12px;line-height:1.7;min-height:44px;}
+  .kids{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:14px;}
+  .kidCard{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 5px rgba(20,40,80,.07);border-top:4px solid #1e63b3;}
+  .kidCard:nth-child(2){border-top-color:#e8a33d;}
+  .kidCard.kongzi{border-top-color:#8a6f4f;}
+  .kidHead{font-size:15px;font-weight:700;color:#1e3a5f;margin-bottom:8px;}
+  .quote{font-size:15px;color:#3b4a5a;line-height:1.7;margin-bottom:8px;}
+  .arg{font-size:14px;color:#5b6b7d;line-height:1.6;margin-bottom:8px;}
+  .truth{font-size:14px;color:#1f6bb3;background:#eff7ff;border-radius:8px;padding:8px 10px;line-height:1.6;}
+  .kidCard button{margin-top:8px;}
+  .science{margin-top:14px;background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 5px rgba(20,40,80,.07);}
+  .science h2{font-size:17px;color:#1e3a5f;margin-bottom:12px;}
+  .row3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;}
+  .sc{background:#f6f9fd;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.7;color:#26323f;}
+  .sc b{color:#1e3a5f;}
+  .sc span{color:#5b6b7d;}
+  .footnote{font-size:13px;color:#8a97a6;margin-top:12px;line-height:1.6;}
+</style>
+<div class="wrap">
+  <header>
+    <h1>两小儿辩日 · 日地距离与冷热教学模型</h1>
+    <p>拖动太阳左右移动（或拖动天空、滑动时间轴），实时观察：<b>太阳照射到地面的光斑时大时小</b> ↔ <b>体感时凉时热</b> ↔ <b>日地距离几乎不变</b></p>
+    <span class="hint">拖动方法：按住太阳圆面左右拖动，或直接在天空上点击 / 拖动；也可用下方按钮和滑块。</span>
+  </header>
+
+  <div class="scene-card">
+    <svg id="scene" viewBox="0 0 1000 560" role="img" aria-label="日地距离与冷热可视化场景：太阳沿圆弧运动，光照到地面的光斑随高度角变化">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop id="skyTop" offset="0" stop-color="#678fd0"/>
+          <stop id="skyMid" offset="0.55" stop-color="#8fb7e1"/>
+          <stop id="skyHor" offset="1" stop-color="#efdbb6"/>
+        </linearGradient>
+        <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#fff6d0" stop-opacity="0.95"/>
+          <stop offset="0.55" stop-color="#ffd96b" stop-opacity="0.45"/>
+          <stop offset="1" stop-color="#ffb23e" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="sunDisk" cx="38%" cy="38%" r="70%">
+          <stop offset="0" stop-color="#fffbe8"/>
+          <stop offset="0.6" stop-color="#ffe066"/>
+          <stop offset="1" stop-color="#ff9d1f"/>
+        </radialGradient>
+        <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8cc76a"/>
+          <stop offset="0.55" stop-color="#6fae5a"/>
+          <stop offset="1" stop-color="#8a6f4f"/>
+        </linearGradient>
+      </defs>
+
+      <rect x="0" y="0" width="1000" height="472" fill="url(#sky)"/>
+
+      <circle cx="500" cy="470" r="370" fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="6 9"/>
+      <text x="322" y="118" font-size="13" fill="#33506b" stroke="#ffffff" stroke-width="3" paint-order="stroke">太阳运行轨道：到你的距离始终不变</text>
+
+      <path d="M0,472 L0,455 Q70,436 150,458 T300,472 Z" fill="#7aa86a" opacity="0.92"/>
+      <g transform="translate(872,472)">
+        <rect x="-3" y="-34" width="6" height="34" fill="#7a5a3c"/>
+        <circle cx="0" cy="-48" r="20" fill="#5c9a4e"/>
+        <circle cx="-14" cy="-38" r="14" fill="#6dad5e"/>
+        <circle cx="14" cy="-38" r="14" fill="#6dad5e"/>
+      </g>
+
+      <rect x="0" y="472" width="1000" height="88" fill="url(#groundG)"/>
+      <line x1="0" y1="472" x2="1000" y2="472" stroke="#5d8f4e" stroke-width="2"/>
+
+      <polygon id="wedge" points="134,419 170,472 830,472" fill="rgba(255,232,140,0.13)" stroke="rgba(255,220,150,0.35)" stroke-width="1.2"/>
+      <line id="rayL" x1="134" y1="419" x2="170" y2="472" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5"/>
+      <line id="rayR" x1="134" y1="419" x2="830" y2="472" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5"/>
+      <line id="rayC" x1="134" y1="419" x2="500" y2="472" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.8" stroke-dasharray="5 4"/>
+
+      <ellipse id="patchGlow" cx="500" cy="472" rx="357" ry="28" fill="#fff2b0" opacity="0.14"/>
+      <ellipse id="patch" cx="500" cy="472" rx="331" ry="16" fill="#fff7cc" opacity="0.38" stroke="#ffd76a" stroke-width="1.5"/>
+
+      <text id="patchLabel" x="500" y="430" text-anchor="middle" font-size="14" font-weight="600" fill="#5d8f4e" stroke="#ffffff" stroke-width="3" paint-order="stroke">地面光斑：×7.2 倍（同一束阳光被摊开）</text>
+
+      <text x="66" y="502" font-size="14" fill="#3b5b3f" font-weight="600">东 · 清晨</text>
+      <text x="500" y="26" text-anchor="middle" font-size="14" fill="#3b5b3f" font-weight="600">南 · 正午</text>
+      <text x="934" y="502" text-anchor="end" font-size="14" fill="#3b5b3f" font-weight="600">西 · 傍晚</text>
+
+      <g id="child">
+        <circle cx="500" cy="449" r="9" fill="#3b4a5a"/>
+        <line x1="500" y1="458" x2="500" y2="471" stroke="#3b4a5a" stroke-width="5" stroke-linecap="round"/>
+        <line x1="500" y1="468" x2="491" y2="472" stroke="#3b4a5a" stroke-width="4" stroke-linecap="round"/>
+        <line x1="500" y1="468" x2="509" y2="472" stroke="#3b4a5a" stroke-width="4" stroke-linecap="round"/>
+        <text x="500" y="497" text-anchor="middle" font-size="13" fill="#33506b">观察者（你）</text>
+      </g>
+
+      <g id="distChip">
+        <rect x="14" y="502" width="372" height="36" rx="8" fill="#ffffff" fill-opacity="0.88" stroke="#cfe0ee" stroke-width="1"/>
+        <text x="26" y="526" font-size="14" font-weight="700" fill="#1e3a5f">日地距离 ≈ 1.496亿千米（一天内几乎不变）</text>
+      </g>
+
+      <g id="sunG" style="cursor:grab">
+        <circle id="sunGlowC" cx="0" cy="0" r="64" fill="url(#sunGlow)"/>
+        <circle id="sunDiskC" cx="0" cy="0" r="34" fill="url(#sunDisk)" stroke="#f0a020" stroke-width="1"/>
+        <text id="sunAngle" x="0" y="-50" text-anchor="middle" font-size="15" font-weight="700" fill="#33475e" stroke="#ffffff" stroke-width="3" paint-order="stroke">高度角 8°</text>
+        <text id="sunHint" x="0" y="60" text-anchor="middle" font-size="13" font-weight="600" fill="#8a4d12" stroke="#ffffff" stroke-width="3" paint-order="stroke">看起来大 · 参照物错觉</text>
+      </g>
+    </svg>
+
+    <div class="controls">
+      <button class="preset active" data-phi="8">清晨 6:30</button>
+      <button class="preset" data-phi="45">上午 9:00</button>
+      <button class="preset" data-phi="90">正午 12:00</button>
+      <button class="preset" data-phi="135">下午 15:00</button>
+      <button class="preset" data-phi="173">傍晚 17:30</button>
+      <button id="playBtn">播放一天</button>
+      <button id="resetBtn">重置</button>
+      <input type="range" id="timeSlider" min="360" max="1080" value="392" step="5" aria-label="时间滑块">
+      <span id="sliderTime" class="sliderTime">6:32</span>
+    </div>
+  </div>
+
+  <div class="cmp">
+    <h2>特写对照：早晨的太阳 vs 正午的太阳</h2>
+    <p class="cmpSub">两个太阳圆面在这里画得<b>一模一样大</b>（真实视直径都约 0.53°）——"时大时小"的秘密在参照物，不在太阳本身。</p>
+    <svg id="cmpSvg" viewBox="0 0 900 250" role="img" aria-label="早晨与正午太阳大小对照特写">
+      <defs>
+        <linearGradient id="cmpSkyL" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8fb0dd"/>
+          <stop offset="1" stop-color="#ffd9a3"/>
+        </linearGradient>
+        <linearGradient id="cmpSkyR" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2f6fc2"/>
+          <stop offset="1" stop-color="#bfe0f7"/>
+        </linearGradient>
+        <radialGradient id="cmpSun" cx="38%" cy="38%" r="70%">
+          <stop offset="0" stop-color="#fffbe8"/>
+          <stop offset="0.6" stop-color="#ffe066"/>
+          <stop offset="1" stop-color="#ff9d1f"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="450" height="250" fill="url(#cmpSkyL)"/>
+      <rect x="450" y="0" width="450" height="250" fill="url(#cmpSkyR)"/>
+      <line x1="450" y1="0" x2="450" y2="250" stroke="#ffffff" stroke-width="2" stroke-dasharray="6 6"/>
+      <rect x="0" y="220" width="450" height="30" fill="#7aa86a"/>
+      <rect x="450" y="220" width="450" height="30" fill="#7aa86a"/>
+
+      <g stroke="#33506b" stroke-width="2" opacity="0.9">
+        <line x1="150" y1="90" x2="242" y2="90"/>
+        <line x1="150" y1="90" x2="150" y2="114"/>
+        <line x1="242" y1="90" x2="242" y2="114"/>
+        <line x1="658" y1="90" x2="750" y2="90"/>
+        <line x1="658" y1="90" x2="658" y2="104"/>
+        <line x1="750" y1="90" x2="750" y2="104"/>
+      </g>
+      <text x="196" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" stroke="#33506b" stroke-width="3" paint-order="stroke">直径相同 ≈ 0.53°</text>
+      <text x="704" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" stroke="#33506b" stroke-width="3" paint-order="stroke">直径相同 ≈ 0.53°</text>
+
+      <g id="refL">
+        <path d="M20,240 L20,226 Q100,200 176,214 Q240,226 360,240 Z" fill="#6d9e5c" opacity="0.95"/>
+        <g transform="translate(284,240)">
+          <rect x="-3" y="-30" width="6" height="30" fill="#7a5a3c"/>
+          <circle cx="0" cy="-42" r="17" fill="#5c9a4e"/>
+          <circle cx="-12" cy="-33" r="12" fill="#6dad5e"/>
+          <circle cx="12" cy="-33" r="12" fill="#6dad5e"/>
+        </g>
+      </g>
+      <circle cx="196" cy="160" r="78" fill="#ffd96b" opacity="0.35"/>
+      <circle cx="196" cy="160" r="46" fill="url(#cmpSun)" stroke="#f0a020" stroke-width="1"/>
+
+      <circle cx="704" cy="150" r="78" fill="#ffd96b" opacity="0.35"/>
+      <circle cx="704" cy="150" r="46" fill="url(#cmpSun)" stroke="#f0a020" stroke-width="1"/>
+
+      <text x="196" y="236" text-anchor="middle" font-size="13" font-weight="600" fill="#2f5d2f">早晨 · “大如车盖”（挨着山和树）</text>
+      <text x="704" y="236" text-anchor="middle" font-size="13" font-weight="600" fill="#2f5d2f">正午 · “如盘盂”（悬在高空）</text>
+    </svg>
+    <div class="cmpFoot">
+      <button id="hideRefBtn">移走参照物，看看会发生什么</button>
+      <p id="cmpNote" class="cmpNote">注意：左图太阳贴着山和树（有参照物），看起来特别大；右图悬在高空（没有参照物），看起来小。可两个圆面直径完全相同（≈0.53°）！</p>
+    </div>
+  </div>
+
+  <div id="teach" class="teach">太阳东升，斜斜地照过来 → 一束光摊成一大片（光斑最大），每平方米分到的热量最少 → 微凉；太阳紧挨着山和树，有参照物，看着特别大。</div>
+
+  <div class="dash">
+    <div class="card">
+      <h3>太阳位置（高度角）</h3>
+      <div class="big" id="dAngle">8°</div>
+      <div class="note" id="dTime">清晨 6:32</div>
+    </div>
+    <div class="card">
+      <h3>光照强度（每平米热量）</h3>
+      <div class="big" id="dIntensity">14%</div>
+      <div class="bar"><i id="dIntBar" style="left:13.9%"></i></div>
+      <div class="note" id="dIntNote">能量分散 → 微凉</div>
+    </div>
+    <div class="card">
+      <h3>地面光斑面积</h3>
+      <div class="big" id="dPatch">×7.2</div>
+      <div class="note">同一束阳光摊开的倍数，正午为 ×1（最小）</div>
+    </div>
+    <div class="card">
+      <h3>体感温度（教学示意）</h3>
+      <div class="big" id="dTemp">20°C</div>
+      <div class="note"><span id="dFeel" class="feelChip fL">微凉</span></div>
+    </div>
+  </div>
+
+  <div class="card dist">
+    <h3>日地距离（实时读数）</h3>
+    <div class="distRow">
+      <div class="big">1.496亿千米</div>
+      <div class="sub">一天内最大变化 ≤ 6,371 千米（约一个地球半径），仅占全程 ≈ 0.004% —— 几乎不变</div>
+    </div>
+    <div class="distBar"><div class="distVar"></div></div>
+    <div class="distNote">结论：太阳的大小和冷热变化，都不是“离我们远近”造成的——两位小朋友判断的依据都错了，而这正是科学探究的意义。</div>
+  </div>
+
+  <div class="kids">
+    <div class="kidCard">
+      <div class="kidHead">小儿甲 · 凭“大小”判断</div>
+      <p class="quote">“日初出大如车盖，及日中则如盘盂，此不为远者小而近者大乎？”</p>
+      <p class="arg">他的结论：<b>早晨太阳离人近，中午离人远</b>（近大远小）。</p>
+      <p class="truth">科学解释：早晨太阳“看着大”是<b>参照物错觉</b>——贴着山和树，有东西可比；太阳真实大小一天基本不变（视直径约 0.53°）。</p>
+    </div>
+    <div class="kidCard">
+      <div class="kidHead">小儿乙 · 凭“冷热”判断</div>
+      <p class="quote">“日初出沧沧凉凉，及其日中如探汤，此不为近者热而远者凉乎？”</p>
+      <p class="arg">他的结论：<b>早晨太阳离人远，中午离人近</b>（近热远凉）。</p>
+      <p class="truth">科学解释：中午热是因为<b>阳光直射、能量集中</b>；早晨阳光斜射、能量分散，而且穿过的<b>大气层更厚</b>，热量被削弱更多。</p>
+    </div>
+    <div class="kidCard kongzi">
+      <div class="kidHead">孔子 · 不能决也</div>
+      <p class="quote">“孔子不能决也。两小儿笑曰：‘孰为汝多知乎？’”（《列子·汤问》）</p>
+      <button id="askBtn">听听孔子的回答</button>
+      <p id="kongziReply" class="truth" hidden>孔子摇头笑道：“凭感觉猜，我确实答不上来——要用科学量一量、看一看，才能知道真相！”</p>
+    </div>
+  </div>
+
+  <div class="science">
+    <h2>科学结论：为什么太阳“时大时小”，又“时凉时热”？</h2>
+    <div class="row3">
+      <div class="sc"><b>① 大小变化 → 参照物错觉，不是远近</b><br><span>早晨太阳贴着山、树和房屋，有东西对比，看着大；正午悬在高空，没有参照物，看着小。太阳的真实视直径约 0.53°，一天内基本不变。</span></div>
+      <div class="sc"><b>② 冷热变化 → 太阳高度角，不是远近</b><br><span>正午阳光直射：同一束光照到更小的地面面积，能量集中 → 热；早晨傍晚阳光斜射：光斑被拉长、摊开，每平方米分到的热量少 → 凉，且此时阳光穿过的大气更厚、被削弱更多。</span></div>
+      <div class="sc"><b>③ 距离 → 几乎不变，不是原因</b><br><span>日地平均距离 1.496 亿千米，一天内最大变化约 6,371 千米（一个地球半径），占比 ≈ 0.004%，对冷热和大小几乎没有影响。</span></div>
+    </div>
+    <p class="footnote">小拓展：实际一天中最热一般出现在午后 2 点前后，因为地面要先吸收热量、再慢慢放出来。<br>本模型为教学示意，数值采用真实量级的近似值。</p>
+  </div>
+</div>
+<script>
+(function(){
+  try{
+    var svg=document.getElementById('scene');
+    if(!svg) return;
+    var C={x:500,y:470}, R=370, GY=472, BEAM=46;
+    var phi=8;
+    var dragging=false;
+    var playing=false, last=0;
+    var els={};
+    ['sunG','sunAngle','sunHint','wedge','rayL','rayR','rayC','patch','patchGlow','patchLabel','skyTop','skyMid','skyHor'].forEach(function(id){ els[id]=document.getElementById(id); });
+    var dash={angle:document.getElementById('dAngle'),time:document.getElementById('dTime'),intensity:document.getElementById('dIntensity'),intBar:document.getElementById('dIntBar'),intNote:document.getElementById('dIntNote'),patch:document.getElementById('dPatch'),temp:document.getElementById('dTemp'),feel:document.getElementById('dFeel'),teach:document.getElementById('teach')};
+    var slider=document.getElementById('timeSlider'), sliderTime=document.getElementById('sliderTime');
+    var playBtn=document.getElementById('playBtn'), resetBtn=document.getElementById('resetBtn');
+    var askBtn=document.getElementById('askBtn'), kongziReply=document.getElementById('kongziReply');
+
+    function d2r(d){return d*Math.PI/180;}
+    function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+    function lerp(a,b,k){return a+(b-a)*k;}
+    function colorLerp(c1,c2,k){
+      var a=[parseInt(c1.substr(1,2),16),parseInt(c1.substr(3,2),16),parseInt(c1.substr(5,2),16)];
+      var b=[parseInt(c2.substr(1,2),16),parseInt(c2.substr(3,2),16),parseInt(c2.substr(5,2),16)];
+      return 'rgb('+Math.round(lerp(a[0],b[0],k))+','+Math.round(lerp(a[1],b[1],k))+','+Math.round(lerp(a[2],b[2],k))+')';
+    }
+    function fmtTime(t){
+      var h=Math.floor(t), m=Math.round((t-h)*60);
+      if(m===60){h+=1;m=0;}
+      var h12=h%12; if(h12===0) h12=12;
+      var mm=('0'+m).slice(-2);
+      var period = h<7?'清晨':(h<11?'上午':(h<13?'正午':(h<15?'下午':'傍晚')));
+      return period+' '+h12+':'+mm;
+    }
+    function teachText(){
+      if(phi<30) return '太阳东升，斜斜地照过来 → 一束光摊成一大片（光斑最大），每平方米分到的热量最少 → 微凉；太阳紧挨着山和树，有参照物，看着特别大。';
+      if(phi<55) return '太阳升高，光线变直，地面光斑开始缩小，能量越来越集中，天气渐渐变暖。';
+      if(phi<80) return '接近正午，光斑明显缩小，能量高度集中，越来越热。';
+      if(phi<=100) return '正午直射！地面光斑最小、能量最集中 → 最炎热；高空没有参照物，太阳看着反而“小”。';
+      if(phi<125) return '过了正午，太阳西斜，光斑重新被拉长，温度开始下降。';
+      if(phi<150) return '下午，光线又变斜了，光斑越摊越大，越来越凉快。';
+      return '傍晚，太阳贴近地平线，光斑摊到最大、能量最分散 → 凉爽；它又挨着参照物，看着又“大”了。';
+    }
+    function render(){
+      phi=clamp(phi,5,175);
+      var rad=d2r(phi);
+      var I=Math.sin(rad);
+      var sx=C.x-R*Math.cos(rad), sy=C.y-R*Math.sin(rad);
+      var hw=clamp(BEAM/Math.sin(rad),8,620);
+      els.sunG.setAttribute('transform','translate('+Math.round(sx)+','+Math.round(sy)+')');
+      els.sunAngle.textContent='高度角 '+Math.round(phi)+'°';
+      if(phi<28||phi>152){ els.sunHint.setAttribute('opacity',1); els.sunHint.textContent='看起来大 · 参照物错觉'; }
+      else if(phi>=80&&phi<=100){ els.sunHint.setAttribute('opacity',1); els.sunHint.textContent='看起来小 · 高空无参照'; }
+      else{ els.sunHint.setAttribute('opacity',0); }
+      var pL=Math.round(500-hw), pR=Math.round(500+hw);
+      var sxr=Math.round(sx), syr=Math.round(sy);
+      els.wedge.setAttribute('points', sxr+','+syr+' '+pL+','+GY+' '+pR+','+GY);
+      els.rayL.setAttribute('x1',sxr); els.rayL.setAttribute('y1',syr); els.rayL.setAttribute('x2',pL); els.rayL.setAttribute('y2',GY);
+      els.rayR.setAttribute('x1',sxr); els.rayR.setAttribute('y1',syr); els.rayR.setAttribute('x2',pR); els.rayR.setAttribute('y2',GY);
+      els.rayC.setAttribute('x1',sxr); els.rayC.setAttribute('y1',syr); els.rayC.setAttribute('x2',500); els.rayC.setAttribute('y2',GY);
+      var ry=15+9*I;
+      els.patch.setAttribute('rx',Math.round(hw)); els.patch.setAttribute('ry',ry.toFixed(1));
+      els.patch.setAttribute('opacity',(0.28+0.68*I).toFixed(3));
+      els.patchGlow.setAttribute('rx',Math.round(hw+26)); els.patchGlow.setAttribute('ry',(ry+12).toFixed(1));
+      els.patchGlow.setAttribute('opacity',(0.12+0.14*I).toFixed(3));
+      var f=1/Math.sin(rad);
+      els.patchLabel.textContent='地面光斑：×'+f.toFixed(1)+' 倍（同一束阳光被摊开）';
+      var warm=Math.max(0,1-phi/32,1-(180-phi)/32);
+      els.skyTop.setAttribute('stop-color',colorLerp('#1e63b3','#7f9fd8',warm));
+      els.skyMid.setAttribute('stop-color',colorLerp('#3f87cc','#aac7e8',warm));
+      els.skyHor.setAttribute('stop-color',colorLerp('#bfe0f7','#ffd9a0',warm));
+      var t=6+phi/180*12;
+      dash.angle.textContent=Math.round(phi)+'°';
+      dash.time.textContent=fmtTime(t);
+      var pct=Math.round(I*100);
+      dash.intensity.textContent=pct+'%';
+      dash.intBar.style.left=(I*100).toFixed(1)+'%';
+      dash.patch.textContent='×'+f.toFixed(1);
+      var temp=18+17*I;
+      dash.temp.textContent=Math.round(temp)+'°C';
+      var feel=temp<21?'微凉':(temp<26?'舒适':(temp<31?'热':'炎热'));
+      var fcls=temp<21?'fL':(temp<26?'fS':(temp<31?'fH':'fY'));
+      dash.feel.textContent=feel;
+      dash.feel.className='feelChip '+fcls;
+      dash.intNote.textContent=I<0.25?'能量分散 → 微凉':(I<0.5?'能量较分散 → 舒适':(I<0.8?'能量较集中 → 热':'能量集中 → 炎热'));
+      dash.teach.textContent=teachText();
+      var mins=Math.round(360+phi/180*720);
+      if(document.activeElement!==slider){ slider.value=mins; }
+      sliderTime.textContent=fmtTime(t);
+    }
+
+    function svgPt(evt){
+      var pt=svg.createSVGPoint();
+      pt.x=evt.clientX; pt.y=evt.clientY;
+      var m=svg.getScreenCTM();
+      if(!m) return null;
+      return pt.matrixTransform(m.inverse());
+    }
+    function setPhiFromPt(p){
+      if(!p) return;
+      var deg=Math.atan2(C.y-p.y,C.x-p.x)*180/Math.PI;
+      phi=clamp(deg,5,175);
+      render();
+    }
+
+    els.sunG.addEventListener('pointerdown',function(e){
+      dragging=true;
+      els.sunG.style.cursor='grabbing';
+      try{ els.sunG.setPointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+    });
+    els.sunG.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      setPhiFromPt(svgPt(e));
+    });
+    els.sunG.addEventListener('pointerup',function(){ dragging=false; els.sunG.style.cursor='grab'; });
+    els.sunG.addEventListener('pointercancel',function(){ dragging=false; els.sunG.style.cursor='grab'; });
+
+    svg.addEventListener('pointerdown',function(e){
+      if(e.target && e.target.closest && e.target.closest('#sunG')) return;
+      var p=svgPt(e);
+      if(p && p.y>40 && p.y<472){ setPhiFromPt(p); dragging=true; }
+    });
+    svg.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      var p=svgPt(e);
+      if(p) setPhiFromPt(p);
+    });
+    svg.addEventListener('pointerup',function(){ dragging=false; });
+    svg.addEventListener('pointercancel',function(){ dragging=false; });
+
+    slider.addEventListener('input',function(){
+      var mins=parseFloat(slider.value);
+      phi=clamp((mins-360)/720*180,5,175);
+      render();
+    });
+
+    var presets=document.querySelectorAll('.preset');
+    presets.forEach(function(b){
+      b.addEventListener('click',function(){
+        phi=parseFloat(b.getAttribute('data-phi'));
+        render();
+        presets.forEach(function(x){ if(x!==b){ x.classList.remove('active'); } });
+        b.classList.add('active');
+      });
+    });
+
+    function tick(ts){
+      if(!playing) return;
+      if(!last) last=ts;
+      var dt=(ts-last)/1000; last=ts;
+      var t=6+phi/180*12+dt*0.5;
+      if(t>18) t=6;
+      phi=(t-6)/12*180;
+      render();
+      requestAnimationFrame(tick);
+    }
+    if(playBtn) playBtn.addEventListener('click',function(){
+      playing=!playing;
+      playBtn.textContent=playing?'暂停':'播放一天';
+      if(playing){ last=0; requestAnimationFrame(tick); }
+    });
+    if(resetBtn) resetBtn.addEventListener('click',function(){
+      playing=false;
+      playBtn.textContent='播放一天';
+      phi=8;
+      render();
+    });
+    if(askBtn) askBtn.addEventListener('click',function(){
+      kongziReply.hidden=false;
+      askBtn.textContent='孔子已作答';
+    });
+
+    var refL=document.getElementById('refL'), hideRefBtn=document.getElementById('hideRefBtn'), cmpNote=document.getElementById('cmpNote');
+    var refsHidden=false;
+    if(hideRefBtn) hideRefBtn.addEventListener('click',function(){
+      refsHidden=!refsHidden;
+      refL.style.transition='opacity .45s';
+      refL.style.opacity=refsHidden?'0':'1';
+      hideRefBtn.textContent=refsHidden?'放回参照物':'移走参照物，看看会发生什么';
+      cmpNote.textContent=refsHidden?'参照物一消失，“大太阳”立刻“缩”了回去——两个太阳看起来几乎一样大！这就是“参照物错觉”：太阳本身的大小并没有变。':'注意：左图太阳贴着山和树（有参照物），看起来特别大；右图悬在高空（没有参照物），看起来小。可两个圆面直径完全相同（≈0.53°）！';
+    });
+
+    render();
+  }catch(e){
+    if(console && console.error){ console.error(e); }
+  }
+})();
+</script>
+</html>
+<!-- （注：内容由AI生成） -->
